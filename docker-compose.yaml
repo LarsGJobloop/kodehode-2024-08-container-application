@@ -1,0 +1,38 @@
+# Just the name for this project
+name: postgresql-intro
+
+# The set of components (services) this solution consist of
+services:
+  # The data base service
+  database:
+    image: postgres:14.13-bookworm
+    # Environment variables are a set of key-values used for
+    # configuring a service/process
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres_password
+    # This defines which ports should use for external access
+    # For the database (http://localhost:5432)
+    ports:
+      - "5432:5432"
+    # Containers does not persist information between restarts
+    # 
+    volumes:
+      - database:/var/lib/postgresql/data
+
+  # The data base admin service
+  pg-admin:
+    image: dpage/pgadmin4:latest
+    environment:
+      # The Username and password for logging in
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    # For the database admin studio (http://localhost:8080)
+    ports:
+      - "8080:80"
+    depends_on:
+      - database
+
+# The place on your harddrive to persist data
+volumes:
+  database:
